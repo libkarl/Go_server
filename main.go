@@ -6,11 +6,32 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"github.com/urfave/cli/v2"
 
-	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
+
+
+var app = &cli.App{
+	Name:        "pokerai",
+	Usage:       "pokerai play",
+	Description: "PokerAI bot build, raw power, superhuman!",
+
+	Commands: []*cli.Command{
+		BuildCMD,
+	},
+}
+
+var BuildCMD = &cli.Command{
+	Name:  "build",
+	Usage: "will try to train the agent",
+	Flags: []cli.Flag{
+		&cli.StringFlag{Name: "cfr.db", Value: ".cfr.db"},
+	},
+	Action: func(ctx *cli.Context) error {
+		
+		return nil
+	},
+}
 
 type Person struct {
 	gorm.Model
@@ -71,7 +92,7 @@ func main () {
 	db.AutoMigrate(&Book{})
 
 	
-	// API routes
+	// API router
 	router := mux.NewRouter()
 	// returns all people
 	router.HandleFunc("/people", getPeople).Methods("GET")
@@ -100,6 +121,7 @@ func getPeople(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(&people)
 }
+
 
 func getPerson(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
